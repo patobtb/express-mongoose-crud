@@ -28,11 +28,11 @@ router.post("/", raw(async (req, res) => {
 // GET ALL USERS
 router.get( "/",raw(async (req, res) => {
     const users = await user_model.find()
-                                    .select(`-_id 
-                                        first_name 
-                                        last_name 
-                                        email
-                                        phone`);
+                                  // .select(`-_id 
+                                  //       first_name 
+                                  //       last_name 
+                                  //       email
+                                  //       phone`);
     res.status(200).json(users);
   })
 );
@@ -40,11 +40,11 @@ router.get( "/",raw(async (req, res) => {
 // GETS A SINGLE USER
 router.get("/:id",raw(async (req, res) => {
     const user = await user_model.findById(req.params.id)
-                                    // .select(`-_id 
-                                    //     first_name 
-                                    //     last_name 
-                                    //     email
-                                    //     phone`);
+                                    .select(`-_id 
+                                        first_name 
+                                        last_name 
+                                        email
+                                        phone`);
     if (!user) return res.status(404).json({ status: "No user found." });
     res.status(200).json(user);
   })
