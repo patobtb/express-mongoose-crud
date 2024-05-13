@@ -3,6 +3,7 @@ import express from "express";
 import log from '@ajar/marker';
 import user_model from "./user.model.mjs";
 import { updateUser, createUser,} from "../../validation/userValidation.js";
+import purifiy from "../../sanitize.js";
 
 const router = express.Router();
 
@@ -38,6 +39,7 @@ router.get( "/",raw(async (req, res) => {
 
 // GETS A SINGLE USER
 router.get("/:id",raw(async (req, res) => {
+    req.params.id = purifiy.sanitize(req.params.id);
     const {error} = updateUser.validate(req.body);
     if(error){
       return res.status(400).send(error.details[0].message)
@@ -55,6 +57,7 @@ router.get("/:id",raw(async (req, res) => {
 
 // UPDATES A SINGLE USER
 router.put("/:id",raw(async (req, res) => {
+    req.params.id = purify.sanitize(req.params.id);
     const {error} = updateUser.validate(req.body);
     if(error){
       return res.status(400).send(error.details[0].message)
@@ -67,6 +70,7 @@ router.put("/:id",raw(async (req, res) => {
 
 // DELETES A USER
 router.delete("/:id",raw(async (req, res) => {
+    req.params.id = purifiy.sanitize(req.params.id);
     const user = await user_model.findByIdAndRemove(req.params.id);
     res.status(200).json(user);
   })
