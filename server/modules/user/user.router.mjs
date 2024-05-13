@@ -1,7 +1,8 @@
-import raw from "../../middleware/route.async.wrapper.mjs"
-import express from "express"
-import log from '@ajar/marker'
-import user_model from "./user.model.mjs"
+import raw from "../../middleware/route.async.wrapper.mjs";
+import express from "express";
+import log from '@ajar/marker';
+import user_model from "./user.model.mjs";
+import { updateUser, createUser } from "../../validation/userValidation.js";
 
 const router = express.Router();
 
@@ -9,19 +10,17 @@ const router = express.Router();
 router.use(express.json())
 
 // CREATES A NEW USER
-// router.post("/", async (req, res,next) => {
-//     try{
-//       const user = await user_model.create(req.body);
-//       res.status(200).json(user);
-//     }catch(err){
-//       next(err)
-//     }
-// });
-
-router.post("/", raw(async (req, res) => {
-     log.obj(req.body, "create a user, req.body:");
-     const user = await user_model.create(req.body);
-     res.status(200).json(user);
+router.post("/", raw(async (req, res, next) => {
+    const {error} = createUser.validate(req.body);
+    if(error){
+      return res.status(400).send(error.details[0].message);
+    }
+    try{ 
+      const user = await user_model.create(req.body);
+      res.status(200).json(user);
+    }catch(err){
+      next(err)
+    }
 }));
 
 
@@ -49,6 +48,7 @@ router.get("/:id",raw(async (req, res) => {
     res.status(200).json(user);
   })
 );
+
 // UPDATES A SINGLE USER
 router.put("/:id",raw(async (req, res) => {
     const user = await user_model.findByIdAndUpdate(req.params.id,req.body, 
@@ -56,6 +56,7 @@ router.put("/:id",raw(async (req, res) => {
     res.status(200).json(user);
   })
 );
+
 // DELETES A USER
 router.delete("/:id",raw(async (req, res) => {
     const user = await user_model.findByIdAndRemove(req.params.id);
