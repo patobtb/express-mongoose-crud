@@ -2,7 +2,7 @@ import raw from "../../middleware/route.async.wrapper.mjs";
 import express from "express";
 import log from '@ajar/marker';
 import user_model from "./user.model.mjs";
-import { updateUser, createUser } from "../../validation/userValidation.js";
+import { updateUser, createUser,} from "../../validation/userValidation.js";
 
 const router = express.Router();
 
@@ -38,6 +38,10 @@ router.get( "/",raw(async (req, res) => {
 
 // GETS A SINGLE USER
 router.get("/:id",raw(async (req, res) => {
+    const {error} = updateUser.validate(req.body);
+    if(error){
+      return res.status(400).send(error.details[0].message)
+    } 
     const user = await user_model.findById(req.params.id)
                                     .select(`-_id 
                                         first_name 
@@ -51,6 +55,10 @@ router.get("/:id",raw(async (req, res) => {
 
 // UPDATES A SINGLE USER
 router.put("/:id",raw(async (req, res) => {
+    const {error} = updateUser.validate(req.body);
+    if(error){
+      return res.status(400).send(error.details[0].message)
+    }
     const user = await user_model.findByIdAndUpdate(req.params.id,req.body, 
                                                     {new: true, upsert: true });
     res.status(200).json(user);
