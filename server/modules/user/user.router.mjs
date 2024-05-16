@@ -24,15 +24,19 @@ router.post("/", raw(async (req, res, next) => {
     }
 }));
 
-
 // GET ALL USERS
-router.get( "/",raw(async (req, res) => {
+router.get("/",raw(async (req, res) => {
+    const {page, limit} = req.query;
+    const skip = (page - 1) * limit;
+  
     const users = await user_model.find()
                                   // .select(`-_id 
                                   //       first_name 
                                   //       last_name 
                                   //       email
                                   //       phone`);
+                                  .skip(skip)
+                                  .limit(limit)
     res.status(200).json(users);
   })
 );
@@ -66,7 +70,7 @@ router.put("/:id",raw(async (req, res) => {
 
 // DELETES A USER
 router.delete("/:id",raw(async (req, res) => {
-    // req.params.id = purify.sanitize(req.params.id);
+    req.params.id = purify.sanitize(req.params.id);
     const user = await user_model.findByIdAndRemove(req.params.id);
     res.status(200).json(user);
   })
