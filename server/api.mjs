@@ -1,11 +1,12 @@
-import express from 'express'
-import morgan from 'morgan'
-import log from '@ajar/marker'
-import cors from 'cors'
+import express from 'express';
+import morgan from 'morgan';
+import log from '@ajar/marker';
+import cors from 'cors';
 
-import {connect_db} from './db/mongoose.connection.mjs'
-import user_router from './modules/user/user.router.mjs'
-import {error_handler,not_found} from './middleware/errors.handler.mjs'
+import {connect_db} from './db/mongoose.connection.mjs';
+import user_router from './modules/user/user.router.mjs';
+import {error_handler, not_found} from './middleware/errors.handler.mjs';
+import paginate from './middleware/pagination.js';
 
 const { PORT,HOST, DB_URI } = process.env;
 
