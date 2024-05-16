@@ -3,7 +3,7 @@ import express from "express";
 import log from '@ajar/marker';
 import user_model from "./user.model.mjs";
 import { updateUser, createUser,} from "../../validation/userValidation.js";
-import purifiy from "../../sanitize.js";
+import purify from "../../sanitize.js";
 
 const router = express.Router();
 
@@ -39,17 +39,13 @@ router.get( "/",raw(async (req, res) => {
 
 // GETS A SINGLE USER
 router.get("/:id",raw(async (req, res) => {
-    req.params.id = purifiy.sanitize(req.params.id);
-    const {error} = updateUser.validate(req.body);
-    if(error){
-      return res.status(400).send(error.details[0].message)
-    } 
+    req.params.id = purify.sanitize(req.params.id);
     const user = await user_model.findById(req.params.id)
-                                    .select(`-_id 
-                                        first_name 
-                                        last_name 
-                                        email
-                                        phone`);
+                                    // .select(`-_id 
+                                    //     first_name 
+                                    //     last_name 
+                                    //     email
+                                    //     phone`);
     if (!user) return res.status(404).json({ status: "No user found." });
     res.status(200).json(user);
   })
@@ -70,10 +66,11 @@ router.put("/:id",raw(async (req, res) => {
 
 // DELETES A USER
 router.delete("/:id",raw(async (req, res) => {
-    req.params.id = purifiy.sanitize(req.params.id);
+    // req.params.id = purify.sanitize(req.params.id);
     const user = await user_model.findByIdAndRemove(req.params.id);
     res.status(200).json(user);
   })
 );
 
 export default router;
+

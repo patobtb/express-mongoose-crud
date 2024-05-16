@@ -15,7 +15,6 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'))
 
-
 // routing
 app.use('/api/users', user_router);
 
